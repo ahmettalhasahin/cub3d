@@ -8,7 +8,7 @@ OBJ = $(SRC:%.c=%.o)
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 
 MLX = -Lmlx -lmlx -framework OpenGL -framework AppKit mlx/libmlx.a
 
@@ -17,7 +17,7 @@ MLX = -Lmlx -lmlx -framework OpenGL -framework AppKit mlx/libmlx.a
 Libft = Libft/libft.a
 
 all : $(OBJ)
-	@$(CC) $(SRC) libmlx_macos.a -framework OpenGL -framework AppKit -o $(NAME) -fsanitize=address
+	@$(CC) $(CFLAGS) $(SRC) libmlx_macos.a -framework OpenGL -framework AppKit -o $(NAME) -fsanitize=address -g
 
 %.o: %.c
 	@$(CC) -c $< -o $@

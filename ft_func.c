@@ -8,10 +8,6 @@
 int func(int keypress, void *arg) {
 
 	t_data *data;
-
-	data = (t_data *)arg;
-
-	mlx_clear_window(data->mlx_ptr, data->mlx_win);
 	int ay;
 	int ax;
 	int by;
@@ -21,6 +17,8 @@ int func(int keypress, void *arg) {
 	int dy;
 	int dx;
 
+	data = (t_data *)arg;
+	mlx_clear_window(data->mlx_ptr, data->mlx_win);
 	ay = data->y1 + (5 * sin((data->angle) * data->val));
 	ax = data->x1 + (5 * cos((data->angle) * data->val));
 	by = data->y1 - (5 * sin(data->angle * data->val));
@@ -77,7 +75,7 @@ int func(int keypress, void *arg) {
 			data->firstAngle[1] = fabs(30 + checkAngle);
 			data->firstAngle[0] = 90;
 		}
-		printf("f: %f, s: %f angle: %f\n", data->firstAngle[0], data->firstAngle[1], checkAngle);
+		// printf("f: %f, s: %f angle: %f\n", data->firstAngle[0], data->firstAngle[1], checkAngle);
 
 	}
 	if (!(checkAngle > 330 && checkAngle < 120)) {

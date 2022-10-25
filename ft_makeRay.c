@@ -1,13 +1,187 @@
 #include "cub3D.h"
 #include <math.h>
 #include <stdlib.h>
+#include "unistd.h"
+
+#include "stdio.h"
+
+void	ft_bzero(void *s, size_t n)
+{
+	unsigned char	*dest;
+
+	dest = s;
+	while (n-- > 0)
+		*dest++ = '\0';
+}
+
+void firstArea(t_data *data, int *d_idx) {
+	int k;
+	float i;
+	int checkPozX, checkPozY, checkPozX1, checkPozY1;
+
+	i = data->firstAngle[1];
+	while (i < data->firstAngle[0] && i < 90)
+	{
+		k = 0;
+		while (k <= 700) {
+			checkPozX = data->x1 + (((int)data->y1 % 70) + k)*tan(data->val * i);
+			checkPozY = data->y1 - (((int)data->y1 % 70) + k);
+			if (wall_check(*data, checkPozX, checkPozY)) {
+				break ;
+			}
+			k += 70;
+		}
+		k = 0;
+		while (k <= 700) {
+			checkPozY1 = data->y1 - (70 - ((int)data->x1 % 70) + k)*(1/tan(data->val * i));
+			checkPozX1 = data->x1 + (70 - ((int)data->x1 % 70) + k);
+			 if (wall_check(*data, checkPozX1, checkPozY1)) {
+				break ;
+			}
+			k += 70;
+		}
+		if (checkPozX < checkPozX1) {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		}
+		else {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+		}
+		i += 0.25;
+	}
+}
+void secArea(t_data *data, int *d_idx) {
+	int k;
+	float i;
+	int checkPozX, checkPozY, checkPozX1, checkPozY1;
+
+	i = data->secAngle[0];
+	while (i >= data->secAngle[1])
+	{
+		k = 0;
+		while (k <= 700) {
+			checkPozX = data->x1 - (((int)data->y1 % 70) + k)*(tan(data->val * i));
+			checkPozY = data->y1 - (((int)data->y1 % 70) + k);
+			if (wall_check(* data, checkPozX, checkPozY)) {
+				break ;
+			}
+			k += 70;
+		}
+		k = 0;
+		while (k <= 700) {
+			checkPozY1 = data->y1 - (((int)data->x1 % 70) + k)*((1/tan(data->val * i)));
+			checkPozX1 = data->x1 - (((int)data->x1 % 70) + k);
+			if (wall_check(*data, checkPozX1, checkPozY1)) {
+				break ;
+			}
+			k += 70;
+		}
+		if (checkPozX > checkPozX1) {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		}
+		else {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+		}
+		i -= 0.25;
+	}	
+}
+
+void thirdArea(t_data *data, int *d_idx) {
+	int k;
+	float i;
+	int checkPozX, checkPozY, checkPozX1, checkPozY1;
+
+	i = data->thirdAngle[1];
+	while (i < data->thirdAngle[0] && i < 90)
+	{
+		k = 0;
+		while (k <= 700) {
+			checkPozX = data->x1 - (70 - ((int)data->y1 % 70) + k)*(tan(data->val * i));
+			checkPozY = data->y1 + (70 - ((int)data->y1 % 70) + k);
+			if (wall_check(* data, checkPozX, checkPozY)) {
+				break ;
+			}
+			k += 70;
+		}
+		k = 0;
+		while (k <= 700) {
+			checkPozY1 = data->y1 + (((int)data->x1 % 70) + k)*((1/tan(data->val * i)));
+			checkPozX1 = data->x1 - (((int)data->x1 % 70) + k);
+			if (wall_check(*data, checkPozX1, checkPozY1)) {
+				break ;
+			}
+			k += 70;
+		}
+		if (checkPozX > checkPozX1) {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		}
+		else {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+		}
+		i += 0.25;
+	}
+}
+
+void fourtArea(t_data *data, int *d_idx) {
+	int k;
+	float i;
+	int checkPozX, checkPozY, checkPozX1, checkPozY1;
+
+	i = data->fourthAngle[0];
+	while (i >= data->fourthAngle[1])
+	{
+		k = 0;
+		while (k <= 700) {
+			checkPozX = data->x1 + (70 - ((int)data->y1 % 70) + k)*((tan(data->val * i)));
+			checkPozY = data->y1 + (70 - ((int)data->y1 % 70) + k);
+			if (wall_check(* data, checkPozX, checkPozY)) {
+				break ;
+			}
+			k += 70;
+		}
+		k = 0;
+ 		while (k <= 700) {
+			checkPozY1 = data->y1 + (70 - ((int)data->x1 % 70) + k)*(1/(tan(data->val * i)));
+			checkPozX1 = data->x1 + (70 - ((int)data->x1 % 70) + k);
+			if (wall_check(*data, checkPozX1, checkPozY1)) {
+				break ;
+			}
+			k += 70;
+ 		}
+		if (checkPozX1 > checkPozX) {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		}
+		else if (checkPozX1 < checkPozX){
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+		}
+		i -= 0.25;
+	}
+}
 
 void makeRay(t_data *data) {
 	double i;
 	double x2;
 	double y2;
 	double tmp;
-	
+
+	int d_idx = -1;
+
+
 	mlx_put_image_to_window(data->mlx_ptr, data->mlx_win, data->new_img, 0, 0);
 	mlx_pixel_put(data->mlx_ptr, data->mlx_win, data->x1, data->y1, 0xff0000);
 	i = 0;
@@ -35,137 +209,113 @@ void makeRay(t_data *data) {
 		mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
 	}
 
-	int checkPozX;
-	int checkPozY;
-	int checkPozX1;
-	int checkPozY1;
+	ft_bzero(data->lastDistances, 600);
 
-	i = 0;
-	int k;
-	i = data->firstAngle[1];
-	while (i < data->firstAngle[0] && i < 90)
-	{
-		k = 0;
-		while (k <= 700) {
-			checkPozX = data->x1 + (((int)data->y1 % 70) + k)*tan(data->val * i);
-			checkPozY = data->y1 - (((int)data->y1 % 70) + k);
-			if (wall_check(*data, checkPozX, checkPozY)) {
-				break ;
-			}
-			k += 70;
-		}
-		k = 0;
-		while (k <= 700) {
-			checkPozY1 = data->y1 - (70 - ((int)data->x1 % 70) + k)*(1/tan(data->val * i));
-			checkPozX1 = data->x1 + (70 - ((int)data->x1 % 70) + k);
-			 if (wall_check(*data, checkPozX1, checkPozY1)) {
-				break ;
-			}
-			k += 70;
-		}
-		if (checkPozX < checkPozX1) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX , checkPozY , data);
-		}
-		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
-		}
-		i += 0.1;
+
+	if (((int)data->angle % 360) > 300 && ((int)data->angle % 360) < 330){ 
+		printf("3.koşul\n");
+		secArea(data, &d_idx);
+		firstArea(data, &d_idx);
+		fourtArea(data, &d_idx);
+		thirdArea(data, &d_idx);
+	}
+	else if (((int)data->angle % 360) > 60 && ((int)data->angle % 360) < 330) {
+		printf("1.koşul-%d\n", ((int)data->angle % 360));
+		fourtArea(data, &d_idx);
+		thirdArea(data, &d_idx);
+		secArea(data, &d_idx);
+		firstArea(data, &d_idx);
+	}
+	else{
+		printf("2.koşul-%d\n", ((int)data->angle % 360));
+		firstArea(data, &d_idx);
+		fourtArea(data, &d_idx);
+		thirdArea(data, &d_idx);
+		secArea(data, &d_idx);
 	}
 
-	i = data->secAngle[1];
-	while (i < data->secAngle[0] && i < 90)
-	{
-		k = 0;
-		while (k <= 700) {
-			checkPozX = data->x1 - (((int)data->y1 % 70) + k)*(tan(data->val * i));
-			checkPozY = data->y1 - (((int)data->y1 % 70) + k);
-			if (wall_check(* data, checkPozX, checkPozY)) {
-				break ;
-			}
-			k += 70;
+	/* int j = -1;
+	while (++j < 24)
+		printf("%d: %f\n", j, data->lastDistances[j]); */
+			
+	double checkAngle = abs((int)data->angle % 360);
+	if (!(checkAngle > 60 && checkAngle < 210)) {
+		if (checkAngle >= 210 && checkAngle <= 300) {
+			data->firstAngle[1] = 0;
+			data->firstAngle[0] = fabs(210 - checkAngle);
 		}
-		k = 0;
-		while (k <= 700) {
-			checkPozY1 = data->y1 - (((int)data->x1 % 70) + k)*((1/tan(data->val * i)));
-			checkPozX1 = data->x1 - (((int)data->x1 % 70) + k);
-			if (wall_check(*data, checkPozX1, checkPozY1)) {
-				break ;
-			}
-			k += 70;
+		else if (checkAngle >= 330) {
+			data->firstAngle[1] = fabs(330 - checkAngle);
+			data->firstAngle[0] = 90;
 		}
-		if (checkPozX > checkPozX1) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
+		else if (checkAngle <= 60) {
+			data->firstAngle[1] = fabs(30 + checkAngle);
+			data->firstAngle[0] = 90;
 		}
-		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
-		}
-		i += 0.1;
+		// printf("f: %f, s: %f angle: %f\n", data->firstAngle[0], data->firstAngle[1], checkAngle);
+
 	}
-	i = data->thirdAngle[1];
-	while (i < data->thirdAngle[0] && i < 90)
-	{
-		k = 0;
-		while (k <= 700) {
-			checkPozX = data->x1 - (70 - ((int)data->y1 % 70) + k)*(tan(data->val * i));
-			checkPozY = data->y1 + (70 - ((int)data->y1 % 70) + k);
-			if (wall_check(* data, checkPozX, checkPozY)) {
-				break ;
-			}
-			k += 70;
+	if (!(checkAngle > 330 && checkAngle < 120)) {
+		if (checkAngle >= 120 && checkAngle < 240) {
+			data->secAngle[0] = 90;
+			if (checkAngle < 210)
+				data->secAngle[1] = fabs(checkAngle - 120 - 90);
+			else
+				data->secAngle[1] = 0;
 		}
-		k = 0;
-		while (k <= 700) {
-			checkPozY1 = data->y1 + (((int)data->x1 % 70) + k)*((1/tan(data->val * i)));
-			checkPozX1 = data->x1 - (((int)data->x1 % 70) + k);
-			if (wall_check(*data, checkPozX1, checkPozY1)) {
-				break ;
-			}
-			k += 70;
+		else if (checkAngle >= 240) {
+			data->secAngle[0] = 90 - fabs(checkAngle - 240);
+			data->secAngle[1] = 0;
 		}
-		if (checkPozX > checkPozX1) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
+
+	}
+	if ((checkAngle <= 240 && checkAngle >= 30)) {
+		if (checkAngle >= 120 && checkAngle <= 240) {
+			data->thirdAngle[0] = 90;
+			if (checkAngle >= 150 && checkAngle <= 240)
+				data->thirdAngle[1] = 90 - fabs(240 - checkAngle);
+			else
+				data->thirdAngle[1] = 0;
 		}
-		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
+		else if (checkAngle < 120) {
+			data->thirdAngle[0] = 90 - fabs(120 - checkAngle);
+			data->thirdAngle[1] = 0;
 		}
-		i += 0.1;
+
+	}
+	if (!(checkAngle < 300 && checkAngle > 150)) {
+        if (!(checkAngle < 300 && checkAngle > 60)) {
+            data->fourthAngle[0] = 90;
+            if (checkAngle >= 300 && checkAngle < 360)
+                data->fourthAngle[1] = 90 - fabs(300 - checkAngle);
+            else if (!(checkAngle > 30))
+                data->fourthAngle[1] = 30 - checkAngle;
+            else
+                data->thirdAngle[1] = 0;
+        }
+        else if (checkAngle <= 150) {
+            data->fourthAngle[0] = 90 - fabs(60 - checkAngle);
+            data->fourthAngle[1] = 0;
+        }
 	}
 
-	i = data->fourthAngle[1];
-	while (i < data->fourthAngle[0] && i < 90)
-	{
-		k = 0;
-		while (k <= 700) {
-			checkPozX = data->x1 + (((int)data->x1 % 70) + k)*((tan(data->val * i)));
-			checkPozY = data->y1 + (70 - ((int)data->x1 % 70) + k);
-			if (wall_check(* data, checkPozX, checkPozY)) {
-				break ;
+	int	k;
+	int l = 0;
+	if (data->begin > 0)
+		while (l < 480)
+		{
+			int	pixel_length = 20000/(int)(data->lastDistances[l]);
+			if (pixel_length > 200)
+				pixel_length= 200;
+			int begining_y = 500 - (pixel_length/2);
+			k = 0;
+			while(k < pixel_length){
+				mlx_pixel_put(data->mlx_ptr, data->win2, l, begining_y, 0xfffffff);
+				begining_y += 5;
+				k+= 5;
 			}
-			k += 70;
+			l += 5;
 		}
-		k = 0;
-		while (k <= 700) {
-			checkPozX1 = data->x1 + (((int)data->y1 % 70) + k)*((tan(data->val * i)));
-			checkPozY1 = data->y1 + (70 -((int)data->y1 % 70) + k);
-			if (wall_check(*data, checkPozX1, checkPozY1)) {
-				break ;
-			}
-			k += 70;
-		}
-		if (checkPozX1 > checkPozX) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0xff0000);
-			drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
-		}
-		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ffff);
-			drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
-		}
-		i+= 1;
-	}
+		data->begin++;
+		mlx_clear_window(data->mlx_ptr, data->win2);
 }
