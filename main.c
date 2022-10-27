@@ -65,13 +65,9 @@ int main() {
 	t_data data;
 
 	ft_init_data(&data);
-/* 	data.distances = calloc(sizeof(int), 5);
-	data.distances[0] = calloc(sizeof(int), 34);
-	data.distances[1] = calloc(sizeof(int), 34);
-	data.distances[2] = calloc(sizeof(int), 34);
-	data.distances[3] = calloc(sizeof(int), 34); */
-	data.lastDistances = calloc(sizeof(int), 960);
-	data.wall_faces = calloc(sizeof(char), 960 + 1);
+
+	data.lastDistances = calloc(sizeof(int), TOTALRAYS);
+	data.wall_faces = calloc(sizeof(char), TOTALRAYS + 1);
 	mlx_put_image_to_window(data.mlx_ptr, data.mlx_win, data.new_img, 0, 0);
 	data.begin =0;
 	makeRay(&data);

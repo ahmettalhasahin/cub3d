@@ -5,6 +5,7 @@
 
 #define PI 3.14159265
 #define RAYS 0.0625
+#define TOTALRAYS ((1 / RAYS) * 60)
 
 
 typedef struct s_data
