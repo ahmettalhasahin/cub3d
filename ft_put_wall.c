@@ -35,10 +35,10 @@ t_data	ft_put_wall(t_data data)
 					data.wallLocationsX++;
 					data.wallLocationsY++;
 					y = 0;
-					while (y <= 68)
+					while (y <= 70)
 					{
 						x = 0;
-						while (x <= 68) 
+						while (x <= 70) 
 						{
 							data.new_img_data[(i * 800 * 70) + (j * 70) + (x + (y * 800))] = 5353205;
 							x++;

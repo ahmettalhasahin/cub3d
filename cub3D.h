@@ -4,6 +4,7 @@
 #include "mlx.h"
 
 #define PI 3.14159265
+#define RAYS 0.0625
 
 
 typedef struct s_data
@@ -25,6 +26,7 @@ typedef struct s_data
 	double secAngle[2];
 	double thirdAngle[2];
 	double	fourthAngle[2];
+	char	*wall_faces;
 	int		wallSize;
 	int		*wallLocationsX;
 	int		*wallLocationsX4;
@@ -33,6 +35,7 @@ typedef struct s_data
 	void	*win2;
 	float	*lastDistances;
 	int		begin;
+	double	angle_distance;
 }	t_data;
 
 int	wall_check(t_data data, int x, int y);

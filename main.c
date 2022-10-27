@@ -3,6 +3,7 @@
 #include <math.h>
 #include "cub3D.h"
 
+
 char map[10][10] = {
 	"1111111111",
 	"1010000001",
@@ -20,8 +21,8 @@ void	ft_init_data_game_values(t_data *data)
 {
 	data->val = PI / 180;
 	data->angle = 630;
-	data->x1 =  210.187407;
-	data->y1 = 309.354930;
+	data->x1 =  420;
+	data->y1 = 180;
 	data->tanAnglePoz = 60;
 	data->tanAngleNeg = 60;
 	data->firstAngle[1] = 0;
@@ -41,6 +42,19 @@ void	ft_init_data(t_data *data)
 	data->mlx_win = mlx_new_window(data->mlx_ptr, 1000, 1000, "377266");
  	data->new_img = mlx_new_image(data->mlx_ptr, 800, 800);
 	data->new_img_data = (int *)mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian);
+
+/* 	int x;
+	int y;
+	data->new_img = mlx_xpm_file_to_image(data->mlx_ptr, "logo.xpm", &x, &y);
+	data->new_img_data = mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian);
+		data->new_img = mlx_xpm_file_to_image(data->mlx_ptr, "logo.xpm", &x, &y);
+	data->new_img_data = mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian);
+		data->new_img = mlx_xpm_file_to_image(data->mlx_ptr, "logo.xpm", &x, &y);
+	data->new_img_data = mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian);
+		data->new_img = mlx_xpm_file_to_image(data->mlx_ptr, "logo.xpm", &x, &y);
+	data->new_img_data = mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian); */
+
+	
 	ft_wall_counter(data);
 	ft_malloc_allocat(data);
 	*data = ft_put_wall(*data);
@@ -56,7 +70,8 @@ int main() {
 	data.distances[1] = calloc(sizeof(int), 34);
 	data.distances[2] = calloc(sizeof(int), 34);
 	data.distances[3] = calloc(sizeof(int), 34); */
-	data.lastDistances = calloc(sizeof(int), 600);
+	data.lastDistances = calloc(sizeof(int), 960);
+	data.wall_faces = calloc(sizeof(char), 960 + 1);
 	mlx_put_image_to_window(data.mlx_ptr, data.mlx_win, data.new_img, 0, 0);
 	data.begin =0;
 	makeRay(&data);
