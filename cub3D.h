@@ -4,8 +4,17 @@
 #include "mlx.h"
 
 #define PI 3.14159265
-#define RAYS 0.0625
+#define RAYS 0.03125
 #define TOTALRAYS ((1 / RAYS) * 60)
+
+typedef struct s_img
+{
+	void	*imgRender;
+	char	*imgRenger_data;
+	int		size_line;
+	int		bits_per_pixel;
+	int		endian;
+}	t_img;
 
 
 typedef struct s_data
@@ -14,15 +23,13 @@ typedef struct s_data
 	int size_line;
 	int endian;
 	void *new_img;
-	int *new_img_data;
+	char *new_img_data;
 	void *mlx_ptr;
 	void *mlx_win;
 	double angle;
 	double val;
 	double x1;
 	double y1;
-	double tanAnglePoz;
-	double tanAngleNeg;
 	double firstAngle[2];
 	double secAngle[2];
 	double thirdAngle[2];
@@ -37,6 +44,8 @@ typedef struct s_data
 	float	*lastDistances;
 	int		begin;
 	double	angle_distance;
+
+	t_img	renderImg;
 }	t_data;
 
 int	wall_check(t_data data, int x, int y);
@@ -48,5 +57,11 @@ void	ft_wall_location_create(int *wallLocationX, int *wallLocationY, int i, int 
 void	ft_malloc_allocat(t_data *data);
 void	ft_wall_counter(t_data *data);
 t_data	ft_put_wall(t_data data);
+char	ft_pozitionCheck(t_data *data, int l);
+void	img_put_pix(t_data *data, int x, int y, int color);
+void	img_put_pix2(t_data *data, int x, int y, int color);
+t_data ft_put_wall2(t_data data);
+
+
 
 #endif

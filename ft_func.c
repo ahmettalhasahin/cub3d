@@ -16,9 +16,17 @@ int func(int keypress, void *arg) {
 	int cx;
 	int dy;
 	int dx;
+	static int check = 0;
 
 	data = (t_data *)arg;
+
+	if (check == 1) {
+		mlx_destroy_image(data->mlx_ptr, data->new_img);
+		check = 1;
+	}
+	
 	mlx_clear_window(data->mlx_ptr, data->mlx_win);
+	*data = ft_put_wall2(*data);
 	ay = data->y1 + (5 * sin((data->angle) * data->val));
 	ax = data->x1 + (5 * cos((data->angle) * data->val));
 	by = data->y1 - (5 * sin(data->angle * data->val));
@@ -28,14 +36,10 @@ int func(int keypress, void *arg) {
 	dy = data->y1 + (5 * sin((data->angle + 90) * data->val));
 	dx = data->x1 + (5 * cos((data->angle + 90) * data->val));
 	if (keypress == 123) {
-		data->tanAnglePoz -= 5;
-		data->tanAngleNeg += 5;
 		data->angle -= 5;
 	}
 	else if (keypress == 124)
 	{
-		data->tanAnglePoz += 5;
-		data->tanAngleNeg -= 5;
 		data->angle += 5;
 	}
 	else if (keypress == 13 && (wall_check(*data, ax, ay) == 0)) {
